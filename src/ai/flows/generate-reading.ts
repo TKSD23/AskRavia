@@ -44,7 +44,7 @@ First, write three distinct paragraphs. Each paragraph should build upon the las
 - Paragraph 2: Expand on the initial answer, connecting it to other aspects of their numerological chart (like their other core numbers) or exploring the practical implications and real-world applications of the insights you've uncovered.
 - Paragraph 3: Offer a piece of wisdom or a new perspective, something surprising or a hidden gem of insight related to their question that they might not have considered.
 
-After the three paragraphs, and separated by a double newline, present a new, relevant, and thought-provoking question as a standalone paragraph to guide their curiosity and encourage them to explore another facet of their numerological journey.
+After the three paragraphs, and separated by a double newline, present a new, relevant, and thought-provoking follow-up question as a standalone paragraph. This question should be conversational and personal, offering a new insight or a path for further exploration. For example: "Given your unique blend of numbers, would you be interested in exploring how your Life Path might influence your career choices this year?" or "Now that we've looked at your core strengths, shall we uncover what your numbers have to say about your personal relationships?"
 
 Here are the details for the person:
 Full Name: {{{fullName}}}
