@@ -61,6 +61,9 @@ const generateReadingFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+        throw new Error("The model did not return a response. This could be due to safety settings or other issues.");
+    }
+    return output;
   }
 );
