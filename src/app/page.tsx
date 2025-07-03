@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Wand2, User, Bot, Loader2, Heart, Send } from "lucide-react";
+import { Wand2, User, Bot, Heart, Send } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { calculateNumerologyProfile, type NumerologyProfile } from "@/lib/numerology";
 import { getReading, getCompatibility } from "./actions";
+import NumerologyAnimation from "@/components/NumerologyAnimation";
 
 const detailsSchema = z.object({
   name: z.string().min(2, { message: "Please enter your full name." }),
@@ -287,10 +288,7 @@ export default function Home() {
                     )}
                     <div className={cn("max-w-md rounded-lg p-3", message.role === 'assistant' ? 'bg-muted' : 'bg-primary text-primary-foreground')}>
                       {message.isLoading ? (
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <span>Thinking...</span>
-                        </div>
+                        <NumerologyAnimation />
                       ) : (
                        <ReactMarkdown className={cn("prose-p:leading-relaxed", message.role === 'assistant' && "prose prose-sm dark:prose-invert")}>
                         {message.content}
