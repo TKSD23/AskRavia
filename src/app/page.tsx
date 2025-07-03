@@ -104,7 +104,7 @@ export default function Home() {
         {
           id: "intro",
           role: "assistant",
-          content: `Hello, ${values.name}. I have received your information. I am Numa, an expert numerologist ready to answer your questions. What would you like to explore first?`,
+          content: `Hello, ${values.name}. I have received your information. I am Ravia, an expert numerologist ready to answer your questions. What would you like to explore first?`,
         },
       ]);
     } catch (error) {
@@ -241,7 +241,7 @@ ${result.followUpQuestion}`;
               <Wand2 className="h-8 w-8 text-accent" />
             </div>
             <CardTitle asChild className="font-headline text-3xl">
-              <h1>NumaWise</h1>
+              <h1>Ask Ravia</h1>
             </CardTitle>
             <CardDescription className="pt-2">
               Your personal AI numerologist.
@@ -260,10 +260,10 @@ ${result.followUpQuestion}`;
               <Wand2 className="h-8 w-8 text-accent" />
             </div>
             <CardTitle asChild className="font-headline text-3xl">
-              <h1>Welcome to NumaWise</h1>
+              <h1>Welcome to Ask Ravia</h1>
             </CardTitle>
             <CardDescription className="pt-2">
-              Hello, my name is Numa. I am an expert numerologist ready to answer your questions.
+              Hello, my name is Ravia. I am an expert numerologist ready to answer your questions.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -306,7 +306,7 @@ ${result.followUpQuestion}`;
         <div className="flex h-screen w-full max-w-3xl flex-col">
           <header className="border-b p-4 flex justify-between items-center">
             <div>
-              <h1 className="font-headline text-2xl text-accent">NumaWise</h1>
+              <h1 className="font-headline text-2xl text-accent">Ask Ravia</h1>
               <p className="text-sm text-muted-foreground">Your Personal AI Numerologist</p>
             </div>
             <Button variant="outline" onClick={signOut}>Sign Out</Button>
@@ -365,7 +365,7 @@ ${result.followUpQuestion}`;
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask Numa a question..."
+                placeholder="Ask Ravia a question..."
                 className="flex-1"
                 aria-label="Chat input"
               />

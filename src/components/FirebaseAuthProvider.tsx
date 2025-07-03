@@ -73,7 +73,7 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
   // Render children only after the initial auth state has been determined
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

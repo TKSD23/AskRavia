@@ -4,23 +4,23 @@ import { FirebaseAuthProvider } from '@/components/FirebaseAuthProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'NumaWise - Your Personal AI Numerologist',
-  description: 'Get personalized numerology readings, chat with our AI numerologist Numa, and explore your Life Path, Destiny, and Soul Urge numbers with NumaWise.',
+  title: 'Ask Ravia - Your Personal AI Numerologist',
+  description: 'Get personalized numerology readings, chat with our AI numerologist Ravia, and explore your Life Path, Destiny, and Soul Urge numbers with Ask Ravia.',
   keywords: ['numerology', 'ai', 'life path number', 'destiny number', 'soul urge number', 'compatibility', 'astrology', 'spirituality'],
-  authors: [{ name: 'NumaWise' }],
-  creator: 'NumaWise AI',
+  authors: [{ name: 'Ask Ravia' }],
+  creator: 'Ask Ravia AI',
   publisher: 'Firebase Studio',
   openGraph: {
-    title: 'NumaWise - Your Personal AI Numerologist',
+    title: 'Ask Ravia - Your Personal AI Numerologist',
     description: 'Discover your true self with AI-powered numerology readings.',
-    url: 'https://numawise.com', // placeholder domain
-    siteName: 'NumaWise',
+    url: 'https://www.askravia.com',
+    siteName: 'Ask Ravia',
     images: [
       {
-        url: 'https://placehold.co/1200x630.png',
+        url: 'https://placehold.co/1200x630.png', 
         width: 1200,
         height: 630,
-        alt: 'NumaWise AI Numerologist',
+        alt: 'Ask Ravia AI Numerologist',
       },
     ],
     locale: 'en_US',
@@ -28,8 +28,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NumaWise - Your Personal AI Numerologist',
-    description: 'Get personalized numerology readings and explore your core numbers with Numa, your AI guide.',
+    title: 'Ask Ravia - Your Personal AI Numerologist',
+    description: 'Get personalized numerology readings and explore your core numbers with Ravia, your AI guide.',
     images: ['https://placehold.co/1200x630.png'], 
   },
   robots: {
