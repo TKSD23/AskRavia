@@ -7,6 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Wand2, User, Bot, Heart, Send } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
+import { getAuth, signInWithPopup, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { app, googleProvider } from '@/lib/firebase';
+
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,12 +66,22 @@ const exampleQuestions = [
 const compatibilityQuestion = exampleQuestions[4];
 
 export default function Home() {
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isCompatibilityDialogOpen, setCompatibilityDialogOpen] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const auth = getAuth(app);
+
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, [auth]);
 
   const detailsForm = useForm<DetailsFormValues>({
     resolver: zodResolver(detailsSchema),
@@ -85,6 +98,30 @@ export default function Home() {
       scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+      toast({
+        variant: "destructive",
+        title: "Sign-in Error",
+        description: "Could not sign you in with Google. Please try again.",
+      });
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+      setUserDetails(null);
+      setMessages([]);
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
 
   const handleDetailsSubmit = (values: DetailsFormValues) => {
     try {
@@ -133,7 +170,9 @@ export default function Home() {
         ...userDetails.profile,
       });
 
-      const fullContent = `${result.answer}\n\n${result.followUpQuestion}`;
+      const fullContent = `${result.answer}
+
+${result.followUpQuestion}`;
 
       setMessages((prev) =>
         prev.map((msg) =>
@@ -176,7 +215,9 @@ export default function Home() {
         partnerFullName: values.partnerName,
         partnerDateOfBirth: values.partnerDob,
       });
-      const fullResponse = `${result.analysis}\n\n${result.followUpQuestion}`;
+      const fullResponse = `${result.analysis}
+
+${result.followUpQuestion}`;
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === assistantMessage.id ? { 
@@ -221,7 +262,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
-      {!userDetails ? (
+      {!user ? (
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -229,6 +270,25 @@ export default function Home() {
             </div>
             <CardTitle asChild className="font-headline text-3xl">
               <h1>NumaWise</h1>
+            </CardTitle>
+            <CardDescription className="pt-2">
+              Your personal AI numerologist.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={handleSignIn} className="w-full">
+              Sign in with Google
+            </Button>
+          </CardContent>
+        </Card>
+      ) : !userDetails ? (
+        <Card className="w-full max-w-md shadow-2xl">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Wand2 className="h-8 w-8 text-accent" />
+            </div>
+            <CardTitle asChild className="font-headline text-3xl">
+              <h1>Welcome to NumaWise</h1>
             </CardTitle>
             <CardDescription className="pt-2">
               Hello, my name is Numa. I am an expert numerologist ready to answer your questions.
@@ -272,11 +332,14 @@ export default function Home() {
         </Card>
       ) : (
         <div className="flex h-screen w-full max-w-3xl flex-col">
-          <header className="border-b p-4 text-center">
-            <h1 className="font-headline text-2xl text-accent">NumaWise</h1>
-            <p className="text-sm text-muted-foreground">Your Personal AI Numerologist</p>
+          <header className="border-b p-4 flex justify-between items-center">
+            <div>
+              <h1 className="font-headline text-2xl text-accent">NumaWise</h1>
+              <p className="text-sm text-muted-foreground">Your Personal AI Numerologist</p>
+            </div>
+            <Button variant="outline" onClick={handleSignOut}>Sign Out</Button>
           </header>
-          <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+          <ScrollArea className="flex-1 p-4" ref={scrollArea_ref}>
             <div className="space-y-4">
               {messages.map((message) => (
                 <div key={message.id}>
