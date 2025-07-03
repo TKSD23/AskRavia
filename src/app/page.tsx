@@ -7,9 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Wand2, User, Bot, Heart, Send } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
-import { getAuth, signInWithPopup, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { app, googleProvider } from '@/lib/firebase';
-
+import { useAuth } from '@/components/FirebaseAuthProvider';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,22 +64,21 @@ const exampleQuestions = [
 const compatibilityQuestion = exampleQuestions[4];
 
 export default function Home() {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const { user, signIn, signOut } = useAuth();
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isCompatibilityDialogOpen, setCompatibilityDialogOpen] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const auth = getAuth(app);
-
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, [auth]);
+    // When the user logs out, reset the state
+    if (!user) {
+      setUserDetails(null);
+      setMessages([]);
+    }
+  }, [user]);
 
   const detailsForm = useForm<DetailsFormValues>({
     resolver: zodResolver(detailsSchema),
@@ -98,30 +95,6 @@ export default function Home() {
       scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
-
-  const handleSignIn = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error("Error signing in with Google: ", error);
-      toast({
-        variant: "destructive",
-        title: "Sign-in Error",
-        description: "Could not sign you in with Google. Please try again.",
-      });
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await auth.signOut();
-      setUserDetails(null);
-      setMessages([]);
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  };
-
 
   const handleDetailsSubmit = (values: DetailsFormValues) => {
     try {
@@ -259,7 +232,6 @@ ${result.followUpQuestion}`;
     ]);
   };
 
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
       {!user ? (
@@ -276,7 +248,7 @@ ${result.followUpQuestion}`;
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={handleSignIn} className="w-full">
+            <Button onClick={signIn} className="w-full">
               Sign in with Google
             </Button>
           </CardContent>
@@ -337,9 +309,9 @@ ${result.followUpQuestion}`;
               <h1 className="font-headline text-2xl text-accent">NumaWise</h1>
               <p className="text-sm text-muted-foreground">Your Personal AI Numerologist</p>
             </div>
-            <Button variant="outline" onClick={handleSignOut}>Sign Out</Button>
+            <Button variant="outline" onClick={signOut}>Sign Out</Button>
           </header>
-          <ScrollArea className="flex-1 p-4" ref={scrollArea_ref}>
+          <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
             <div className="space-y-4">
               {messages.map((message) => (
                 <div key={message.id}>
