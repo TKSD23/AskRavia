@@ -253,7 +253,7 @@ export default function Home() {
                         <span>Thinking...</span>
                       </div>
                     ) : (
-                       <ReactMarkdown className="prose prose-sm dark:prose-invert prose-p:leading-relaxed">
+                       <ReactMarkdown className={cn("prose-p:leading-relaxed", message.role === 'assistant' && "prose prose-sm dark:prose-invert")}>
                         {message.content}
                       </ReactMarkdown>
                     )}
