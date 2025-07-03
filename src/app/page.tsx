@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useRef, useEffect, type FormEvent } from "react";
@@ -64,7 +63,7 @@ const exampleQuestions = [
 const compatibilityQuestion = exampleQuestions[4];
 
 export default function Home() {
-  const { user, signIn, signOut } = useAuth();
+  const { user, loading, signIn, signOut } = useAuth();
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -143,9 +142,7 @@ export default function Home() {
         ...userDetails.profile,
       });
 
-      const fullContent = `${result.answer}
-
-${result.followUpQuestion}`;
+      const fullContent = `${result.answer}\n\n${result.followUpQuestion}`;
 
       setMessages((prev) =>
         prev.map((msg) =>
@@ -188,9 +185,7 @@ ${result.followUpQuestion}`;
         partnerFullName: values.partnerName,
         partnerDateOfBirth: values.partnerDob,
       });
-      const fullResponse = `${result.analysis}
-
-${result.followUpQuestion}`;
+      const fullResponse = `${result.analysis}\n\n${result.followUpQuestion}`;
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === assistantMessage.id ? { 
@@ -231,6 +226,14 @@ ${result.followUpQuestion}`;
       assistantMessage
     ]);
   };
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
+        <NumerologyAnimation />
+      </main>
+    );
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
