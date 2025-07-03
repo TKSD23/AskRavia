@@ -90,20 +90,6 @@ export default {
           '0%, 100%': { opacity: '0.2', transform: 'scale(0.9)' },
           '50%': { opacity: '1', transform: 'scale(1.05)' },
         },
-        'wisp-up': {
-          '0%': {
-            transform: 'translateY(20vh) scale(0.8)',
-            opacity: '0',
-          },
-          '20%': {
-            transform: 'translateY(-50vh) scale(1)',
-            opacity: '1',
-          },
-          '100%': {
-            transform: 'translateY(-120vh) scale(1.2)',
-            opacity: '0',
-          },
-        },
         'fade-in-slow': {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
@@ -113,7 +99,6 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'mystic-pulse': 'mystic-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'wisp-up': 'wisp-up 12s ease-in-out infinite',
         'fade-in-slow': 'fade-in-slow 1.5s ease-out 500ms forwards',
       },
        typography: (theme: any) => ({

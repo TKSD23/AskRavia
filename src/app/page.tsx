@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { calculateNumerologyProfile, type NumerologyProfile } from "@/lib/numerology";
 import { getReading, getCompatibility } from "./actions";
 import NumerologyAnimation from "@/components/NumerologyAnimation";
-import SmokeScreen from "@/components/SmokeScreen";
 
 const detailsSchema = z.object({
   name: z.string().min(2, { message: "Please enter your full name." }),
@@ -68,7 +67,6 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isCompatibilityDialogOpen, setCompatibilityDialogOpen] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -126,7 +124,6 @@ export default function Home() {
     const assistantMessage: Message = { id: crypto.randomUUID(), role: "assistant", content: "", isLoading: true };
     setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setInput("");
-    setIsGenerating(true);
 
     try {
       const result = await getReading({
@@ -157,8 +154,6 @@ export default function Home() {
           msg.id === assistantMessage.id ? { ...msg, content: errorMessage, isLoading: false } : msg
         )
       );
-    } finally {
-      setIsGenerating(false);
     }
   };
 
@@ -173,7 +168,6 @@ export default function Home() {
     };
     const assistantMessage: Message = { id: crypto.randomUUID(), role: 'assistant', content: "", isLoading: true };
     setMessages((prev) => [...prev, userMessage, assistantMessage]);
-    setIsGenerating(true);
 
     try {
       const result = await getCompatibility({
@@ -202,8 +196,6 @@ export default function Home() {
           msg.id === assistantMessage.id ? { ...msg, content: errorMessage, isLoading: false } : msg
         )
       );
-    } finally {
-      setIsGenerating(false);
     }
     compatibilityForm.reset();
   };
@@ -229,7 +221,6 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
-      <SmokeScreen isVisible={isGenerating} />
       {!userDetails ? (
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="text-center">
