@@ -91,7 +91,7 @@ export default {
           '50%': { opacity: '1', transform: 'scale(1.05)' },
         },
         'fade-in-slow': {
-          '0%': { opacity: '0' },
+          '0%, 25%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
       },
@@ -99,7 +99,7 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'mystic-pulse': 'mystic-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'fade-in-slow': 'fade-in-slow 1.5s ease-out 500ms forwards',
+        'fade-in-slow': 'fade-in-slow 2s ease-out forwards',
       },
        typography: (theme: any) => ({
         DEFAULT: {
