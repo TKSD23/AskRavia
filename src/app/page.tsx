@@ -188,7 +188,9 @@ export default function Home() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
               <Wand2 className="h-8 w-8 text-accent" />
             </div>
-            <CardTitle className="font-headline text-3xl">NumaWise</CardTitle>
+            <CardTitle asChild className="font-headline text-3xl">
+              <h1>NumaWise</h1>
+            </CardTitle>
             <CardDescription className="pt-2">
               Hello, my name is Numa. I am an expert numerologist ready to answer your questions.
             </CardDescription>
