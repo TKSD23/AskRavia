@@ -40,6 +40,9 @@ type Message = {
   role: "user" | "assistant";
   content: string;
   isLoading?: boolean;
+  isYesNoQuestion?: boolean;
+  followUpQuestion?: string;
+  isActioned?: boolean;
 };
 
 type UserDetails = {
@@ -122,16 +125,25 @@ export default function Home() {
     setInput("");
 
     try {
-      const answer = await getReading({
+      const result = await getReading({
         fullName: userDetails.name,
         dateOfBirth: userDetails.dob,
         question,
         ...userDetails.profile,
       });
 
+      const fullContent = `${result.answer}\n\n${result.followUpQuestion}`;
+
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === assistantMessage.id ? { ...msg, content: answer, isLoading: false } : msg
+          msg.id === assistantMessage.id ? { 
+            ...msg, 
+            content: fullContent, 
+            isLoading: false,
+            isYesNoQuestion: result.isYesNoQuestion,
+            followUpQuestion: result.followUpQuestion,
+            isActioned: false,
+           } : msg
         )
       );
     } catch (error) {
@@ -166,7 +178,14 @@ export default function Home() {
       const fullResponse = `${result.analysis}\n\n${result.followUpQuestion}`;
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === assistantMessage.id ? { ...msg, content: fullResponse, isLoading: false } : msg
+          msg.id === assistantMessage.id ? { 
+            ...msg, 
+            content: fullResponse, 
+            isLoading: false,
+            isYesNoQuestion: result.isYesNoQuestion,
+            followUpQuestion: result.followUpQuestion,
+            isActioned: false,
+           } : msg
         )
       );
     } catch (error) {
@@ -179,6 +198,17 @@ export default function Home() {
     }
     compatibilityForm.reset();
   };
+  
+  const handleYesClick = (messageId: string, question?: string) => {
+    if (!question) return;
+    setMessages(prev => prev.map(msg => msg.id === messageId ? { ...msg, isActioned: true } : msg));
+    processQuestion(question);
+  };
+
+  const handleNoClick = (messageId: string) => {
+    setMessages(prev => prev.map(msg => msg.id === messageId ? { ...msg, isActioned: true } : msg));
+  };
+
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
@@ -238,29 +268,37 @@ export default function Home() {
             <p className="text-sm text-muted-foreground">Your Personal AI Numerologist</p>
           </header>
           <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-            <div className="space-y-6">
+            <div className="space-y-4">
               {messages.map((message) => (
-                <div key={message.id} className={cn("flex items-start gap-3", message.role === "user" && "justify-end")}>
-                  {message.role === "assistant" && (
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-accent">
-                      <Bot className="h-5 w-5" />
-                    </div>
-                  )}
-                  <div className={cn("max-w-md rounded-lg p-3", message.role === 'assistant' ? 'bg-muted' : 'bg-primary text-primary-foreground')}>
-                    {message.isLoading ? (
-                      <div className="flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Thinking...</span>
+                <div key={message.id}>
+                  <div className={cn("flex items-start gap-3", message.role === "user" && "justify-end")}>
+                    {message.role === "assistant" && (
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-accent">
+                        <Bot className="h-5 w-5" />
                       </div>
-                    ) : (
+                    )}
+                    <div className={cn("max-w-md rounded-lg p-3", message.role === 'assistant' ? 'bg-muted' : 'bg-primary text-primary-foreground')}>
+                      {message.isLoading ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Thinking...</span>
+                        </div>
+                      ) : (
                        <ReactMarkdown className={cn("prose-p:leading-relaxed", message.role === 'assistant' && "prose prose-sm dark:prose-invert")}>
                         {message.content}
                       </ReactMarkdown>
+                      )}
+                    </div>
+                    {message.role === "user" && (
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-accent">
+                        <User className="h-5 w-5" />
+                      </div>
                     )}
                   </div>
-                  {message.role === "user" && (
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-accent">
-                      <User className="h-5 w-5" />
+                  {message.role === 'assistant' && message.isYesNoQuestion && !message.isActioned && (
+                    <div className="mt-2 flex items-center justify-start gap-2 pl-11">
+                        <Button variant="outline" size="sm" onClick={() => handleYesClick(message.id, message.followUpQuestion)}>Yes</Button>
+                        <Button variant="outline" size="sm" onClick={() => handleNoClick(message.id)}>No</Button>
                     </div>
                   )}
                 </div>

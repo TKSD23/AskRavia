@@ -22,6 +22,7 @@ export type CompatibilityInput = z.infer<typeof CompatibilityInputSchema>;
 const CompatibilityOutputSchema = z.object({
   analysis: z.string().describe('A detailed, three-paragraph numerological compatibility analysis.'),
   followUpQuestion: z.string().describe('A conversational, personal, and insightful follow-up question to encourage further exploration.'),
+  isYesNoQuestion: z.boolean().describe('True if the followUpQuestion can be answered with a simple "Yes".'),
 });
 export type CompatibilityOutput = z.infer<typeof CompatibilityOutputSchema>;
 
@@ -41,6 +42,8 @@ For the 'analysis' field, structure your response into three distinct paragraphs
 - Paragraph 3: Offer a piece of wisdom or a new perspective on their partnership. Provide practical, actionable advice or a hidden insight that can help them navigate their journey together and maximize their potential as a couple. Frame this as a key to unlocking even deeper connection.
 
 For the 'followUpQuestion' field, you must provide a new, relevant, and thought-provoking follow-up question. This question should be a direct offer for more information about their relationship, not a request for more details from the user. It should be conversational and personal, inviting them to delve deeper into their dynamics. For instance: "Now that we understand your core compatibility, would you like to see what the numbers suggest for navigating challenges together in the coming year?" or "Considering your combined energies, are you curious about which specific activities could bring you closer as a couple?"
+
+For the 'isYesNoQuestion' field, set it to true if your 'followUpQuestion' can be answered with a simple "Yes". Otherwise, set it to false.
 
 User's Details:
 - Full Name: {{{userFullName}}}

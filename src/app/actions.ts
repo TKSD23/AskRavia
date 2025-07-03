@@ -1,7 +1,7 @@
 'use server';
 
-import { analyzeCompatibility, CompatibilityInput } from '@/ai/flows/analyze-compatibility';
-import { generateReading, GenerateReadingInput } from '@/ai/flows/generate-reading';
+import { analyzeCompatibility, CompatibilityInput, CompatibilityOutput } from '@/ai/flows/analyze-compatibility';
+import { generateReading, GenerateReadingInput, GenerateReadingOutput } from '@/ai/flows/generate-reading';
 import { z } from 'zod';
 
 // Define Zod schemas for input validation to ensure type safety
@@ -23,19 +23,19 @@ const CompatibilityInputSchema = z.object({
   partnerDateOfBirth: z.string(),
 });
 
-export async function getReading(input: GenerateReadingInput) {
+export async function getReading(input: GenerateReadingInput): Promise<GenerateReadingOutput> {
   // Validate input against the Zod schema
   const validatedInput = ReadingInputSchema.parse(input);
   try {
     const result = await generateReading(validatedInput);
-    return result.answer;
+    return result;
   } catch (error) {
     console.error("Error in getReading action:", error);
     throw new Error("Failed to generate reading.");
   }
 }
 
-export async function getCompatibility(input: CompatibilityInput) {
+export async function getCompatibility(input: CompatibilityInput): Promise<CompatibilityOutput> {
   // Validate input against the Zod schema
   const validatedInput = CompatibilityInputSchema.parse(input);
   try {
