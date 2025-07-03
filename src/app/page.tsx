@@ -111,7 +111,7 @@ export default function Home() {
     processQuestion(input);
   };
 
-  const processQuestion = async (question: string) => {
+  const processQuestion = async (question: string, displayedContent?: string) => {
     if (!userDetails) return;
 
     if (question === compatibilityQuestion) {
@@ -119,7 +119,7 @@ export default function Home() {
       return;
     }
 
-    const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: question };
+    const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: displayedContent || question };
     const assistantMessage: Message = { id: crypto.randomUUID(), role: "assistant", content: "", isLoading: true };
     setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setInput("");
@@ -201,12 +201,20 @@ export default function Home() {
   
   const handleYesClick = (messageId: string, question?: string) => {
     if (!question) return;
+    // Mark the original message as actioned before processing the question
     setMessages(prev => prev.map(msg => msg.id === messageId ? { ...msg, isActioned: true } : msg));
-    processQuestion(question);
+    processQuestion(question, "Yes");
   };
 
   const handleNoClick = (messageId: string) => {
-    setMessages(prev => prev.map(msg => msg.id === messageId ? { ...msg, isActioned: true } : msg));
+    const userMessage: Message = { id: crypto.randomUUID(), role: 'user', content: 'No' };
+    const assistantMessage: Message = { id: crypto.randomUUID(), role: 'assistant', content: "No problem. Feel free to ask another question when you're ready." };
+    
+    setMessages(prev => [
+      ...prev.map(msg => msg.id === messageId ? { ...msg, isActioned: true } : msg),
+      userMessage,
+      assistantMessage
+    ]);
   };
 
 
