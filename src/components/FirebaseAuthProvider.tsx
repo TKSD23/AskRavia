@@ -8,6 +8,8 @@ import {
   signInWithRedirect, 
   getRedirectResult, 
   GoogleAuthProvider, 
+  setPersistence,
+  browserLocalPersistence,
   type User, 
   type Auth 
 } from 'firebase/auth';
@@ -54,8 +56,10 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async () => {
     if (auth) {
-      const provider = new GoogleAuthProvider();
       try {
+        // Explicitly set persistence to be more robust across redirects.
+        await setPersistence(auth, browserLocalPersistence);
+        const provider = new GoogleAuthProvider();
         // Always use the redirect method.
         await signInWithRedirect(auth, provider);
       } catch (error) {
