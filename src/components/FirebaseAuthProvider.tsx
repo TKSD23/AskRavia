@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, type User, type Auth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithRedirect, GoogleAuthProvider, type User, type Auth } from 'firebase/auth';
 
 // Define the Firebase Config from environment variables
 const firebaseConfig = {
@@ -31,27 +31,24 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   // This useEffect hook runs ONLY on the client-side, after the component mounts.
-  // This is the key to fixing the build error.
   useEffect(() => {
-    // Initialize Firebase app and auth
     const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
     const authInstance = getAuth(app);
     setAuth(authInstance);
 
-    // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(authInstance, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, []); // The empty dependency array ensures this runs only once on mount
+  }, []);
 
   const signIn = async () => {
     if (auth) {
       try {
-        await signInWithPopup(auth, new GoogleAuthProvider());
+        // Use signInWithRedirect instead of signInWithPopup
+        await signInWithRedirect(auth, new GoogleAuthProvider());
       } catch (error) {
         console.error("Error signing in with Google: ", error);
       }
@@ -70,7 +67,6 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
 
   const value = { user, loading, signIn, signOut };
 
-  // Render children only after the initial auth state has been determined
   return (
     <AuthContext.Provider value={value}>
       {children}
