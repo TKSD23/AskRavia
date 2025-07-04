@@ -6,7 +6,6 @@ import {
   getAuth, 
   onAuthStateChanged, 
   signInWithRedirect, 
-  signInWithPopup,
   getRedirectResult, 
   GoogleAuthProvider, 
   type User, 
@@ -41,13 +40,11 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
     const authInstance = getAuth(app);
     setAuth(authInstance);
 
-    // This is the single source of truth for the user's login state.
     const unsubscribe = onAuthStateChanged(authInstance, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
     
-    // Process the redirect result from a sign-in attempt.
     getRedirectResult(authInstance).catch((error) => {
       console.error("Error processing redirect result", error);
     });
@@ -59,12 +56,8 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
     if (auth) {
       const provider = new GoogleAuthProvider();
       try {
-        // Use popup for development (Firebase Studio) and redirect for production.
-        if (process.env.NODE_ENV === 'development') {
-          await signInWithPopup(auth, provider);
-        } else {
-          await signInWithRedirect(auth, provider);
-        }
+        // Always use the redirect method.
+        await signInWithRedirect(auth, provider);
       } catch (error) {
         console.error("Error signing in with Google: ", error);
       }
@@ -83,7 +76,6 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
 
   const value = { user, loading, signIn, signOut };
 
-  // Return children only after the initial loading is complete.
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
