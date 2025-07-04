@@ -9,7 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import { useAuth } from '@/components/FirebaseAuthProvider';
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form as ShadcnForm, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -72,7 +72,6 @@ export default function Home() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // When the user logs out, reset the state
     if (!user) {
       setUserDetails(null);
       setMessages([]);
@@ -142,7 +141,9 @@ export default function Home() {
         ...userDetails.profile,
       });
 
-      const fullContent = `${result.answer}\n\n${result.followUpQuestion}`;
+      const fullContent = `${result.answer}
+
+${result.followUpQuestion}`;
 
       setMessages((prev) =>
         prev.map((msg) =>
@@ -185,7 +186,9 @@ export default function Home() {
         partnerFullName: values.partnerName,
         partnerDateOfBirth: values.partnerDob,
       });
-      const fullResponse = `${result.analysis}\n\n${result.followUpQuestion}`;
+      const fullResponse = `${result.analysis}
+
+${result.followUpQuestion}`;
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === assistantMessage.id ? { 
@@ -211,7 +214,6 @@ export default function Home() {
   
   const handleYesClick = (messageId: string, question?: string) => {
     if (!question) return;
-    // Mark the original message as actioned before processing the question
     setMessages(prev => prev.map(msg => msg.id === messageId ? { ...msg, isActioned: true } : msg));
     processQuestion(question, "Yes");
   };
