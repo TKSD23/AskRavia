@@ -2,6 +2,7 @@
 
 import { getCompatibility as analyzeCompatibilityFlow } from '@/ai/flows/analyze-compatibility';
 import { getReading as generateReadingFlow } from '@/ai/flows/generate-reading';
+import { runFlow } from '@genkit-ai/flow';
 import { z } from 'zod';
 
 // Define Zod schemas for input validation to ensure type safety
@@ -24,7 +25,7 @@ const CompatibilityInputSchema = z.object({
 export async function getReading(input: z.infer<typeof ReadingInputSchema>) {
   const validatedInput = ReadingInputSchema.parse(input);
   try {
-    const result = await generateReadingFlow(validatedInput);
+    const result = await runFlow(generateReadingFlow, validatedInput);
     return result;
   } catch (error) {
     console.error("Error in getReading action:", error);
@@ -35,7 +36,7 @@ export async function getReading(input: z.infer<typeof ReadingInputSchema>) {
 export async function getCompatibility(input: z.infer<typeof CompatibilityInputSchema>) {
   const validatedInput = CompatibilityInputSchema.parse(input);
   try {
-    const result = await analyzeCompatibilityFlow(validatedInput);
+    const result = await runFlow(analyzeCompatibilityFlow, validatedInput);
     return result; 
   } catch (error) {
     console.error("Error in getCompatibility action:", error);
