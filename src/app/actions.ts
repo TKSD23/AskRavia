@@ -1,7 +1,7 @@
 'use server';
 
-import { analyzeCompatibility, CompatibilityInput, CompatibilityOutput } from '@/ai/flows/analyze-compatibility';
-import { generateReading, GenerateReadingInput, GenerateReadingOutput } from '@/ai/flows/generate-reading';
+import { getCompatibility as analyzeCompatibilityFlow } from '@/ai/flows/analyze-compatibility';
+import { getReading as generateReadingFlow } from '@/ai/flows/generate-reading';
 import { z } from 'zod';
 
 // Define Zod schemas for input validation to ensure type safety
@@ -9,11 +9,6 @@ const ReadingInputSchema = z.object({
   fullName: z.string(),
   dateOfBirth: z.string(),
   question: z.string(),
-  lifePathNumber: z.number(),
-  destinyNumber: z.number(),
-  soulUrgeNumber: z.number(),
-  personalityNumber: z.number(),
-  birthdayNumber: z.number(),
 });
 
 const CompatibilityInputSchema = z.object({
@@ -23,11 +18,10 @@ const CompatibilityInputSchema = z.object({
   partnerDateOfBirth: z.string(),
 });
 
-export async function getReading(input: GenerateReadingInput): Promise<GenerateReadingOutput> {
-  // Validate input against the Zod schema
+export async function getReading(input: z.infer<typeof ReadingInputSchema>) {
   const validatedInput = ReadingInputSchema.parse(input);
   try {
-    const result = await generateReading(validatedInput);
+    const result = await generateReadingFlow(validatedInput);
     return result;
   } catch (error) {
     console.error("Error in getReading action:", error);
@@ -35,12 +29,10 @@ export async function getReading(input: GenerateReadingInput): Promise<GenerateR
   }
 }
 
-export async function getCompatibility(input: CompatibilityInput): Promise<CompatibilityOutput> {
-  // Validate input against the Zod schema
+export async function getCompatibility(input: z.infer<typeof CompatibilityInputSchema>) {
   const validatedInput = CompatibilityInputSchema.parse(input);
   try {
-    const result = await analyzeCompatibility(validatedInput);
-    // The flow returns an object with analysis and a follow-up question
+    const result = await analyzeCompatibilityFlow(validatedInput);
     return result; 
   } catch (error) {
     console.error("Error in getCompatibility action:", error);
