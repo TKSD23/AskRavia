@@ -1,7 +1,7 @@
 'use server';
 
 import { getCompatibility as analyzeCompatibilityFlow } from '@/ai/flows/analyze-compatibility';
-import { getReading as generateReadingFlow } from '@/ai/flows/generate-reading';
+import { generateReadingFlow } from '@/ai/flows/generate-reading';
 import { runFlow } from '@genkit-ai/flow';
 import { z } from 'zod';
 
