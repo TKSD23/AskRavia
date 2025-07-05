@@ -13,6 +13,8 @@ const ReadingInputSchema = z.object({
   lifePathNumber: z.number().optional(),
   destinyNumber: z.number().optional(),
   soulUrgeNumber: z.number().optional(),
+  personalityNumber: z.number().optional(),
+  birthdayNumber: z.number().optional(),
 });
 
 const CompatibilityInputSchema = z.object({
