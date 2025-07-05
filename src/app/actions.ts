@@ -9,6 +9,9 @@ const ReadingInputSchema = z.object({
   fullName: z.string(),
   dateOfBirth: z.string(),
   question: z.string(),
+  lifePathNumber: z.number().optional(),
+  destinyNumber: z.number().optional(),
+  soulUrgeNumber: z.number().optional(),
 });
 
 const CompatibilityInputSchema = z.object({

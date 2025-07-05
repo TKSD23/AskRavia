@@ -112,3 +112,11 @@ export const calculateNumerologyProfile = (fullName: string, dateOfBirth: string
         birthdayNumber: calculateBirthdayNumber(dateOfBirth)
     };
 };
+
+import { z } from 'zod';
+
+export const getReadingSchema = z.object({
+    fullName: z.string(),
+    dateOfBirth: z.string(),
+    question: z.string(),
+});
