@@ -1,4 +1,4 @@
-import {getCompatibilityTool} from '@/lib/numerology';
+import {calculateNumerologyProfile} from '@/lib/numerology';
 import {generate} from '@genkit-ai/ai';
 import {defineFlow} from '@genkit-ai/flow';
 import {z} from 'zod';
@@ -26,14 +26,9 @@ export const getCompatibility = defineFlow(
     output: {schema: CompatibilityOutputSchema},
   },
   async (input) => {
-    const userProfile = getCompatibilityTool.fn({
-      fullName: input.userFullName,
-      dateOfBirth: input.userDateOfBirth,
-    });
-    const partnerProfile = getCompatibilityTool.fn({
-      fullName: input.partnerFullName,
-      dateOfBirth: input.partnerDateOfBirth,
-    });
+    const userProfile = calculateNumerologyProfile(input.userFullName, input.userDateOfBirth);
+    const partnerProfile = calculateNumerologyProfile(input.partnerFullName, input.partnerDateOfBirth);
+    
     const prompt = ai.definePrompt({
       name: 'compatibilityPrompt',
       input: {

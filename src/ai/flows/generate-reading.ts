@@ -1,17 +1,9 @@
-import {getReadingSchema, getReadingTool} from '@/lib/numerology';
+import { calculateNumerologyProfile, getReadingSchema } from '@/lib/numerology';
 import {generate} from '@genkit-ai/ai';
 import {defineFlow, runFlow} from '@genkit-ai/flow';
 import {z} from 'zod';
 import {getCompatibility} from './analyze-compatibility';
 import {googleAI} from '@genkit-ai/googleai';
-
-//
-// This flow is used to generate a numerology reading for a user.
-//
-// It takes the user's name, date of birth, and a question as input.
-// It uses the user's numerology profile to generate a prompt for the model.
-// The model then generates a reading and a follow-up question.
-//
 
 const GenerateReadingInputSchema = z.object({
   fullName: z.string(),
@@ -64,8 +56,6 @@ After answering the question, you must ask a follow-up question to invite furthe
     if (response.isYesNoQuestion && response.followUpQuestion) {
       return response;
     }
-    // If we get here, the model did not return a valid yes/no question.
-    // We will ask the user if they want to check their compatibility.
     return {
       answer: response.answer,
       followUpQuestion:
@@ -91,6 +81,6 @@ export async function getReading(input: z.infer<typeof getReadingSchema>) {
   }
   return await runFlow(generateReadingFlow, {
     ...input,
-    ...getReadingTool.fn(input),
+    ...calculateNumerologyProfile(input.fullName, input.dateOfBirth),
   });
 }
