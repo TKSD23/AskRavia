@@ -5,6 +5,7 @@
 # The NEXT_PUBLIC_FIREBASE_* variables are automatically handled by
 # Firebase App Hosting's built-in FIREBASE_WEBAPP_CONFIG
 # environment variable and the logic in next.config.ts.
+# Updated to trigger rebuild with correct API key configuration.
 runConfig:
   maxInstances: 1
   env:
