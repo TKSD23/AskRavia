@@ -3,7 +3,7 @@ import {generate} from '@genkit-ai/ai';
 import {defineFlow, runFlow} from '@genkit-ai/flow';
 import {z} from 'zod';
 import {getCompatibility} from './analyze-compatibility';
-import {googleAI} from '@genkit-ai/googleai';
+import { model } from '../genkit';
 
 const GenerateReadingInputSchema = z.object({
   fullName: z.string(),
@@ -20,8 +20,6 @@ const GenerateReadingOutputSchema = z.object({
   isYesNoQuestion: z.boolean(),
 });
 
-const ai = googleAI('gemini-1.5-flash-latest');
-
 export const generateReadingFlow = defineFlow(
   {
     name: 'generateReadingFlow',
@@ -29,11 +27,7 @@ export const generateReadingFlow = defineFlow(
     output: {schema: GenerateReadingOutputSchema},
   },
   async (input) => {
-    const prompt = ai.definePrompt({
-      name: 'generateReadingPrompt',
-      input: {schema: GenerateReadingInputSchema},
-      output: {schema: GenerateReadingOutputSchema},
-      prompt: `You are Ravia, an expert numerologist with a warm, encouraging, and insightful voice. Your purpose is to provide exceptionally valuable, insightful, and in-depth numerological readings that feel both magical and practical. Go above and beyond the user's specific question to reveal fascinating connections and deeper meanings within their numerology profile. Make each reading feel unique and personal.
+    const prompt = `You are Ravia, an expert numerologist with a warm, encouraging, and insightful voice. Your purpose is to provide exceptionally valuable, insightful, and in-depth numerological readings that feel both magical and practical. Go above and beyond the user's specific question to reveal fascinating connections and deeper meanings within their numerology profile. Make each reading feel unique and personal.
 
 Here is the user's numerology profile:
 - Life Path Number: ${input.lifePathNumber}
@@ -43,15 +37,16 @@ Here is the user's numerology profile:
 Based on this profile, please answer the user's question: "${input.question}"
 
 After answering the question, you must ask a follow-up question to invite further conversation. The follow-up question must be a 'yes' or 'no' question.
-
-`,
-    });
+`;
 
     const llmResponse = await generate({
-      prompt: prompt.name,
-      input,
-      model: ai,
+      prompt,
+      model,
+      output: {
+        schema: GenerateReadingOutputSchema,
+      }
     });
+    
     const response = llmResponse.output()!;
     if (response.isYesNoQuestion && response.followUpQuestion) {
       return response;

@@ -1,19 +1,7 @@
-import {genkit} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
+import { googleAI } from '@genkit-ai/googleai';
 
-const apiKey = process.env.GOOGLE_API_KEY;
-
-if (!apiKey) {
-  console.warn(
-    "GOOGLE_API_KEY environment variable not set. Please create a .env.local file and add your key. You can get a key from https://aistudio.google.com/app/apikey"
-  );
-}
-
-export const ai = genkit({
-  plugins: [
-    googleAI({
-      apiKey: apiKey || '',
-    }),
-  ],
-  model: 'googleai/gemini-2.0-flash',
-});
+// This is the single, authoritative instance of your AI model.
+// It will be imported by all other AI-related files.
+// The googleAI() function will automatically find and use the 
+// GOOGLE_API_KEY from the environment variables you have configured.
+export const model = googleAI('gemini-1.5-flash-latest');
